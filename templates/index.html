@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حل‌کننده پیشرفته معادلات</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+<h1>حل‌کننده پیشرفته معادلات</h1>
+
+<form method="post">
+<section>
+<h2>حل یک معادله</h2>
+<input type="text" name="polyInput" placeholder="مثال: 3*x^2 - 2*x + 1 = 0">
+<button type="submit" name="solve_poly">حل</button>
+<p>{{ poly_result }}</p>
+{% if chart_img %}
+<img src="data:image/png;base64,{{ chart_img }}" alt="Chart" style="width:100%;max-width:600px;">
+{% endif %}
+</section>
+</form>
+</div>
+</body>
+</html>

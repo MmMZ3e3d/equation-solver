@@ -1,2 +1,9 @@
 Flask
 numpy
+sympy
+easyocr
+opencv-python
+matplotlib
+torch
+torchaudio
+torchvision

@@ -1,3 +1,2 @@
-Flask
-numpy
-matplotlib
+Flask==2.3.2
+numpy==1.24.0

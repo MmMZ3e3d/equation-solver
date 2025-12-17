@@ -3,32 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>حل‌کننده پیشرفته معادلات</title>
+<title>حل معادله با عکس</title>
+
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
 <div class="container">
-<h2>حل معادله از روی عکس</h2>
 
-<input type="file" id="imageInput" accept="image/*">
-<button onclick="readEquation()">تشخیص معادله</button>
+<header>
+<h1>حل معادله فقط با عکس 📷</h1>
+<label class="switch">
+  <input type="checkbox" onchange="toggleDark()">
+  <span class="slider"></span>
+</label>
+</header>
 
-<input id="polyInput" placeholder="معادله تشخیص داده‌شده اینجا میاد">
-<h1>حل‌کننده پیشرفته معادلات</h1>
+<button onclick="openCamera()">📷 گرفتن عکس</button>
 
-<form method="post">
-<section>
-<h2>حل یک معادله</h2>
-<input type="text" name="polyInput" placeholder="مثال: 3*x^2 - 2*x + 1 = 0">
-<button type="submit" name="solve_poly">حل</button>
-<p>{{ poly_result }}</p>
-{% if chart_img %}
-<img src="data:image/png;base64,{{ chart_img }}" alt="Chart" style="width:100%;max-width:600px;">
-{% endif %}
-</section>
-</form>
+<video id="video" autoplay playsinline></video>
+<canvas id="canvas"></canvas>
+
+<button onclick="capture()">📸 ثبت عکس و حل</button>
+
+<p id="equation"></p>
+<p id="roots"></p>
+<canvas id="chart"></canvas>
+
 </div>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>
-<script src="{{url_for('static', filename='ocr.js')}}"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>

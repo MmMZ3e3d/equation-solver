@@ -1,94 +1,75 @@
-/* فونت فارسی */
-@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css');
-
-body {
-    font-family: 'Vazir', sans-serif;
-    background: linear-gradient(135deg, #f2f4f8, #d9e2ec);
-    direction: rtl;
-    margin: 0;
-    padding: 20px 0;
+body{
+    font-family:sans-serif;
+    background:#eef2f7;
+    direction:rtl;
+    transition:0.3s;
 }
 
-.container {
-    max-width: 800px;
-    background: #ffffff;
-    padding: 30px 40px;
-    margin: auto;
-    border-radius: 20px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+.dark{
+    background:#0f172a;
+    color:white;
 }
 
-h1 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #333;
+.container{
+    max-width:750px;
+    margin:40px auto;
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.15);
 }
 
-h2 {
-    text-align: center;
-    margin-bottom: 15px;
-    color: #555;
+.dark .container{
+    background:#020617;
 }
 
-/* کارت بخش‌ها */
-section {
-    background: #f9fafc;
-    border-radius: 15px;
-    padding: 20px;
-    margin-bottom: 25px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+button{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    cursor:pointer;
 }
 
-/* ورودی‌ها */
-input, textarea {
-    width: 100%;
-    padding: 14px;
-    margin: 8px 0;
-    border-radius: 10px;
-    border: 1px solid #cbd5e1;
-    direction: ltr;
-    text-align: left;
-    font-size: 16px;
-    transition: border 0.3s, box-shadow 0.3s;
+video, canvas {
+  width: 100%;
+  border-radius: 12px;
+  margin-top: 10px;
 }
 
-input:focus, textarea:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 5px rgba(59,130,246,0.5);
+/* Dark mode switch */
+.switch{
+    position:relative;
+    display:inline-block;
+    width:50px;
+    height:24px;
 }
-
-/* دکمه‌ها */
-button {
-    padding: 12px 20px;
-    background: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    margin-top: 10px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background 0.3s, transform 0.2s;
+.switch input{display:none;}
+.slider{
+    position:absolute;
+    cursor:pointer;
+    background:#ccc;
+    border-radius:24px;
+    width:100%;
+    height:100%;
 }
-
-button:hover {
-    background: #2563eb;
-    transform: translateY(-2px);
+.slider:before{
+    content:"";
+    position:absolute;
+    height:18px;
+    width:18px;
+    left:3px;
+    bottom:3px;
+    background:white;
+    border-radius:50%;
+    transition:.3s;
 }
-
-/* نمایش جواب‌ها */
-p {
-    margin-top: 12px;
-    padding: 10px;
-    background: #e0f2fe;
-    border-radius: 8px;
-    color: #0369a1;
-    word-wrap: break-word;
+input:checked + .slider{
+    background:#2563eb;
 }
-
-/* نمودار */
-img {
-    margin-top: 15px;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+input:checked + .slider:before{
+    transform:translateX(26px);
 }

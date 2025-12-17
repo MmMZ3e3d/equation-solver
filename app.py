@@ -98,6 +98,9 @@ def index():
 
     return render_template('index.html', poly_result=poly_result, 
                            system_result=system_result, chart_img=chart_img)
+import os
 
-if __name__=="__main__":
-    app.run(debug=True)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))  # Render مقدار PORT را ست می‌کند
+    app.run(host="0.0.0.0", port=port)
+

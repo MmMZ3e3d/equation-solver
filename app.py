@@ -1,47 +1,82 @@
 from flask import Flask, render_template, request, jsonify
+import easyocr
 import numpy as np
-import re
+from sympy import symbols, Eq, solve
+import cv2
+import base64
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import io
 import os
 
 app = Flask(__name__)
 
-def parse_polynomial(expr):
-    expr = expr.replace(" ", "").replace("=0", "")
-    terms = re.findall(r'[+-]?[^+-]+', expr)
+# initialize OCR
+reader = easyocr.Reader(['fa','en'])
 
-    max_pow = 0
-    for t in terms:
-        if '^' in t:
-            max_pow = max(max_pow, int(t.split('^')[1]))
-        elif 'x' in t:
-            max_pow = max(max_pow, 1)
+x = symbols('x')
 
-    coeffs = [0]*(max_pow+1)
+def normalize_equation(text):
+    # اعداد فارسی → انگلیسی
+    fa = '۰۱۲۳۴۵۶۷۸۹'
+    en = '0123456789'
+    for i,f in enumerate(fa):
+        text = text.replace(f,en[i])
+    # اصلاح علائم
+    text = text.replace('×','*').replace('÷','/').replace('−','-')
+    # توان‌ها
+    text = text.replace('^','**')
+    text = text.replace('=','=')
+    return text
 
-    for t in terms:
-        if 'x' in t:
-            coef_match = re.match(r'([+-]?\d*\.?\d*)\*?x', t)
-            coef = coef_match.group(1)
-            coef = float(coef) if coef not in ["", "+", "-"] else (-1 if coef == "-" else 1)
-            power = int(t.split('^')[1]) if '^' in t else 1
-            coeffs[max_pow - power] += coef
-        else:
-            coeffs[-1] += float(t)
+def solve_equation(equation_text):
+    try:
+        eq_left = equation_text.split('=')[0]
+        eq_sympy = Eq(eval(eq_left),0)
+        roots = solve(eq_sympy, x)
+        return [str(r) for r in roots]
+    except Exception as e:
+        print("Error solving equation:", e)
+        return []
 
-    return coeffs
+def generate_plot(equation_text):
+    eq_left = equation_text.split('=')[0]
+    f = lambda val: eval(eq_left.replace('x','({})'.format(val)))
+    X = np.linspace(-10,10,400)
+    Y = np.array([f(v) for v in X])
+    # convert to list for json
+    return X.tolist(), Y.tolist()
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
 @app.route("/solve", methods=["POST"])
-def solve():
-    expr = request.json["equation"]
-    coeffs = parse_polynomial(expr)
-    roots = [str(r) for r in np.roots(coeffs)]
-    x = np.linspace(-10, 10, 400).tolist()
-    y = np.polyval(coeffs, x).tolist()
-    return jsonify({"roots": roots, "x": x, "y": y})
+def solve_route():
+    file = request.files.get("image")
+    if not file:
+        return jsonify({"error":"No image uploaded"})
+    
+    # read image in memory
+    img_bytes = np.frombuffer(file.read(), np.uint8)
+    img = cv2.imdecode(img_bytes, cv2.IMREAD_COLOR)
+    
+    # OCR
+    result = reader.readtext(img)
+    equation_text = ''.join([t[1] for t in result])
+    
+    equation_text = normalize_equation(equation_text)
+    
+    roots = solve_equation(equation_text)
+    X, Y = generate_plot(equation_text)
+    
+    return jsonify({
+        "equation": equation_text,
+        "roots": roots,
+        "x": X,
+        "y": Y
+    })
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT",5000)))

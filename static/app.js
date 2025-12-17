@@ -8,52 +8,23 @@ function previewImage(){
     img.style.display = "block";
 }
 
-async function processImage(){
+async function uploadImage(){
     const file = document.getElementById("imageInput").files[0];
     if(!file) return alert("لطفاً یک عکس انتخاب کنید.");
 
-    const result = await Tesseract.recognize(file, 'eng');
-    let raw = result.data.text;
+    const formData = new FormData();
+    formData.append("image", file);
 
-    let equation = normalizeEquation(raw);
-    document.getElementById("equation").innerText =
-        "معادله تشخیص داده شده: " + equation;
-
-    solveEquation(equation);
-}
-
-function normalizeEquation(text){
-    // اعداد فارسی → انگلیسی
-    const fa = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
-    fa.forEach((n,i)=> text = text.replaceAll(n,i));
-
-    // اصلاحات OCR معمول
-    text = text.replace(/O/g,'0')
-               .replace(/×/g,'*')
-               .replace(/÷/g,'/')
-               .replace(/−/g,'-');
-
-    // توان‌ها و ضرب مخفی
-    text = text.replace(/x\s*2/g,'x^2')
-               .replace(/x\s*3/g,'x^3')
-               .replace(/x\s*4/g,'x^4')
-               .replace(/(\d)x/g,'$1*x')
-               .replace(/\)\(/g,')*(');
-
-    // حذف فاصله‌ها و مساوی
-    text = text.replace(/\s+/g,'').replace(/=/g,'=0');
-
-    return text;
-}
-
-async function solveEquation(eq){
     const res = await fetch("/solve",{
         method:"POST",
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({equation:eq})
+        body: formData
     });
 
     const data = await res.json();
+    if(data.error) return alert(data.error);
+
+    document.getElementById("equation").innerText =
+        "معادله تشخیص داده شده: " + data.equation;
     document.getElementById("roots").innerText =
         "ریشه‌ها: " + data.roots.join(" , ");
 
@@ -69,10 +40,6 @@ function drawChart(x,y){
             datasets:[{data:y,borderWidth:2}]
         }
     });
-}
-
-function toggleDark(){
-    document.body.classList.toggle("dark");
 }
 
 document.getElementById("imageInput").addEventListener("change", previewImage);

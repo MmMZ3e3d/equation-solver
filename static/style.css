@@ -23,21 +23,23 @@ body{
     background:#020617;
 }
 
-button{
+button, input{
     width:100%;
     padding:12px;
     margin:10px 0;
     border-radius:10px;
+}
+
+button{
     background:#2563eb;
     color:white;
     border:none;
     cursor:pointer;
 }
 
-video, canvas {
-  width: 100%;
-  border-radius: 12px;
-  margin-top: 10px;
+#preview{
+    max-width:100%;
+    border-radius:15px;
 }
 
 /* Dark mode switch */
@@ -73,3 +75,4 @@ input:checked + .slider{
 input:checked + .slider:before{
     transform:translateX(26px);
 }
+

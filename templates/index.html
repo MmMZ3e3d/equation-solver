@@ -21,12 +21,10 @@
 </label>
 </header>
 
-<button onclick="openCamera()">📷 گرفتن عکس</button>
+<input type="file" id="imageInput" accept="image/*">
+<img id="preview" style="display:none">
 
-<video id="video" autoplay playsinline></video>
-<canvas id="canvas"></canvas>
-
-<button onclick="capture()">📸 ثبت عکس و حل</button>
+<button onclick="processImage()">✅ حل معادله</button>
 
 <p id="equation"></p>
 <p id="roots"></p>
